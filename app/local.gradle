@@ -1,0 +1,7 @@
+android {
+    defaultConfig {
+        buildConfigField "String", "MAPS_API_KEY", "\"AIzaSyBmHWg3cjBT-AZoEw8BeZPaikZoYJMb8zQ\""
+        buildConfigField "String", "WEATHERS_API_KEY",  "\"6b056152c8adc6d085c0cbd8947cc5f4\""
+
+    }
+}

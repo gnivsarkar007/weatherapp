@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Android Assignment</string>
+    <string name="something_went_wrong">Oops something went wrong!</string>
+    <string name="network_refresh_title">Please refresh the page and try again</string>
+    <string name="refresh">Refresh</string>
+    <string name="no_network">No Network connection</string>
+    <string name="check_network_title">Please check your network connection and try again</string>
+    <string name="settings">Network settings</string>
+    <string name="top_bar_title">Weather</string>
+    <string name="add_cities">Tap to add some cities!</string>
+</resources>
