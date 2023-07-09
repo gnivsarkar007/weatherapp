@@ -55,20 +55,7 @@ fun DetailsScreen(
 
                 Box(contentAlignment = Alignment.BottomCenter) {
                     Column {
-                        Row(
-                            modifier = Modifier
-                                .height(56.dp)
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .clickable { onFinish() }
-                            )
-                            AppBar(true)
-                        }
+
                         Column(
                             modifier = Modifier
                                 .padding(16.dp)

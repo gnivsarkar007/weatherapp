@@ -13,13 +13,13 @@ class CitiesRepoImpl(
         Result.Success(it)
     }.catch { Result.Error(Result.Error.Type.DB) }
 
-    override suspend fun getCity(name: String): CityEntity = cityDao.getDetails(name = name)
+    override suspend fun getCity(id: String): CityEntity = cityDao.getDetails(id = id)
 
-    override suspend fun addCity(name: String, latitude: Double, longitude: Double) {
-        cityDao.insert(CityEntity(name, latitude, longitude))
+    override suspend fun addCity(city: CityEntity) {
+        cityDao.insert(city)
     }
 
-    override suspend fun removeCity(name: String) {
-        cityDao.remove(name)
+    override suspend fun removeCity(id: String) {
+        cityDao.remove(id)
     }
 }

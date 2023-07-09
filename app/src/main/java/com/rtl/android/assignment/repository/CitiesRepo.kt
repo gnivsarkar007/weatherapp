@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface CitiesRepo {
     fun getAllCities(): Flow<Result<List<CityEntity>>>
-    suspend fun getCity(name: String): CityEntity
-    suspend fun addCity(name: String, latitude: Double, longitude: Double)
-    suspend fun removeCity(name: String)
+    suspend fun getCity(id: String): CityEntity
+    suspend fun addCity(city: CityEntity)
+    suspend fun removeCity(id: String)
 }

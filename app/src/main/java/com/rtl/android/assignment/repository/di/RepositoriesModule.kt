@@ -9,13 +9,14 @@ import com.rtl.android.assignment.repository.WeatherRepoImpl
 import com.rtl.android.assignment.util.IoDispatcher
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import kotlinx.coroutines.CoroutineDispatcher
-import javax.inject.Singleton
 
 @Module
+@InstallIn(ViewModelComponent::class)
 class RepositoriesModule {
     @Provides
-    @Singleton
     fun providesWeatherRepository(
         citiesDao: CitiesDao,
         apiService: WeatherService,
@@ -24,7 +25,6 @@ class RepositoriesModule {
         WeatherRepoImpl(apiService, citiesDao, dispatcher = ioDispatcher)
 
     @Provides
-    @Singleton
     fun providesCitiesRepo(
         citiesDao: CitiesDao,
     ): CitiesRepo = CitiesRepoImpl(citiesDao)

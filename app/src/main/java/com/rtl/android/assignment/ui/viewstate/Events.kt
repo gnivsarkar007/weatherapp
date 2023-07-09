@@ -5,8 +5,7 @@ sealed interface NavigationEvents
 
 sealed class CitiesListEvents {
     class OpenDetails(val cityName: String) : CitiesListEvents(), NavigationEvents
-    class OpenSearch : CitiesListEvents(),
-                       NavigationEvents { // needed so back to back search events can be fired, otherwise the flow thinks its the same event and ignores
+    class OpenSearch : CitiesListEvents(), NavigationEvents { // needed so back to back search events can be fired, otherwise the flow thinks its the same event and ignores
         override fun equals(other: Any?): Boolean {
             return this === other
         }
@@ -16,7 +15,7 @@ sealed class CitiesListEvents {
         }
     }
 
-    data class AddCity(val name: String, val latitude: Double, val longitude: Double) :
+    data class AddCity(val id: String, val name: String, val latitude: Double, val longitude: Double) :
         CitiesListEvents()
 
     data class RemoveCity(val name: String) : CitiesListEvents()
@@ -24,8 +23,6 @@ sealed class CitiesListEvents {
 
 sealed class SingleCityWeatherEvents {
     object CloseDetails : SingleCityWeatherEvents()
-    data class Load(val model: CityWeatherDetailsModel? = null, val name: String) :
-        SingleCityWeatherEvents()
 
     class Refresh :
         SingleCityWeatherEvents() { // needed so back to back refresh events can be fired, otherwise the flow thinks its the same event and ignores

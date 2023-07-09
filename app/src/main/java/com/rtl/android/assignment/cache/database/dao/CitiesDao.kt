@@ -14,12 +14,12 @@ interface CitiesDao {
     @Query(value = SELECT)
     fun getCities(): Flow<List<CityEntity>>
 
-    @Query(value = "$SELECT where name = ${":name"}")
-    suspend fun getDetails(name: String): CityEntity
+    @Query(value = "$SELECT where name = ${":id"}")
+    suspend fun getDetails(id: String): CityEntity
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(city: CityEntity)
 
-    @Query(value = "$DELETE${":name"}")
-    suspend fun remove(name: String)
+    @Query(value = "$DELETE${":id"}")
+    suspend fun remove(id: String)
 }

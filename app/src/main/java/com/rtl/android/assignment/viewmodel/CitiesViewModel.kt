@@ -2,6 +2,7 @@ package com.rtl.android.assignment.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rtl.android.assignment.cache.database.entity.CityEntity
 import com.rtl.android.assignment.repository.CitiesRepo
 import com.rtl.android.assignment.repository.Result
 import com.rtl.android.assignment.ui.viewstate.CitiesListEvents
@@ -10,13 +11,17 @@ import com.rtl.android.assignment.ui.viewstate.CitiesListingModel
 import com.rtl.android.assignment.ui.viewstate.ListingCell
 import com.rtl.android.assignment.ui.viewstate.NavigationEvents
 import com.rtl.android.assignment.util.IoDispatcher
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class CitiesViewModel @Inject constructor(
     private val repository: CitiesRepo,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
@@ -33,19 +38,20 @@ class CitiesViewModel @Inject constructor(
         }
     }
 
-    private val mutableNavFlow = MutableStateFlow<NavigationEvents?>(
-        null
-    )
-    val navigationFlow: StateFlow<NavigationEvents?> = mutableNavFlow
+    private val mutableNavFlow = Channel<NavigationEvents?>(Channel.BUFFERED)
+    val navigationFlow = mutableNavFlow.receiveAsFlow()
 
     init {
         getCities()
     }
 
     private fun onEvent(event: CitiesListEvents) = when (event) {
-        is CitiesListEvents.OpenDetails -> mutableNavFlow.value = event
-        is CitiesListEvents.AddCity -> event.run { addCity(name, latitude, longitude) }
-        is CitiesListEvents.OpenSearch -> mutableNavFlow.value = event
+        is CitiesListEvents.OpenDetails -> {
+            viewModelScope.launch { mutableNavFlow.send(event) }
+        }
+
+        is CitiesListEvents.AddCity -> event.run { addCity(id, name, latitude, longitude) }
+        is CitiesListEvents.OpenSearch -> viewModelScope.launch { mutableNavFlow.send(event) }
         is CitiesListEvents.RemoveCity -> event.run { removeCity(name) }
     }
 
@@ -55,9 +61,9 @@ class CitiesViewModel @Inject constructor(
         }
     }
 
-    private fun addCity(name: String, latitude: Double, longitude: Double) {
+    private fun addCity(id: String, name: String, latitude: Double, longitude: Double) {
         viewModelScope.launch(dispatcher) {
-            repository.addCity(name, latitude, longitude)
+            repository.addCity(CityEntity(id, name, latitude, longitude))
         }
     }
 
@@ -72,6 +78,7 @@ class CitiesViewModel @Inject constructor(
                             else -> CitiesListViewState(CitiesListingModel.Error.Api)
                         }
                     }
+
                     is Result.Success -> {
                         val mapped = result.data.map { ListingCell(it.name) }
                         mutableFlow.value = CitiesListViewState(
